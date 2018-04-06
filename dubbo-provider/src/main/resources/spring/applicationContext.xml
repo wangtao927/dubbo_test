@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation=
+               "http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+	            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+	            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
+
+    <context:annotation-config/>
+    <aop:aspectj-autoproxy/>
+    <import resource="classpath:META-INF/fs-polling-mq.xml"/>
+
+    <import resource="spring-cms.xml"/>
+    <import resource="spring-db.xml"/>
+    <import resource="dubbo-consumer.xml"/>
+    <import resource="dubbo-provider.xml"/>
+    <import resource="spring-threadpool.xml"/>
+
+    <context:component-scan base-package="com.facishare.open.emailproxy"/>
+    <bean class="com.fxiaoke.metrics.MetricsConfiguration"/>
+
+    <!-- 日志上传 -->
+    <bean id="logMonitorInterceptor"
+          class="com.facishare.open.emailproxy.provider.interceptor.LogMonitorInterceptor"/>
+    <aop:config>
+        <aop:pointcut id="methodPoint"
+                      expression="execution(* com.facishare.open.emailproxy.task.api.service.*.*(..)) "/>
+        <aop:advisor pointcut-ref="methodPoint" advice-ref="logMonitorInterceptor"/>
+    </aop:config>
+
+    <!-- api异常处理 -->
+    <bean id="apiExceptionInterceptor"
+          class="com.facishare.open.emailproxy.provider.interceptor.ApiExceptionInterceptor"/>
+    <aop:config>
+        <aop:pointcut id="methodPoint"
+                      expression="execution(* com.facishare.open.emailproxy.task.api.service.*.*(..)) "/>
+        <aop:advisor pointcut-ref="methodPoint" advice-ref="apiExceptionInterceptor"/>
+    </aop:config>
+
+    <!--文件服务 -->
+    <import resource="classpath:/META-INF/spring/fs-fsi-proxy-service.xml"></import>
+
+    <!-- 该线程池用于绑定时初次同步邮件-->
+    <bean id="syncTaskExecutor"
+          class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="20"/>
+        <property name="maxPoolSize" value="300"/>
+        <property name="queueCapacity" value="5000"/>
+        <property name="keepAliveSeconds" value="6000"/>
+        <property name="rejectedExecutionHandler">
+            <bean class="java.util.concurrent.ThreadPoolExecutor$CallerRunsPolicy"/>
+        </property>
+    </bean>
+
+    <bean id="redisLockHandler" class="com.facishare.open.emailproxy.common.util.RedisAndLockHandler">
+        <property name="jedis" ref="jedisSupport"></property>
+    </bean>
+
+    <bean id="cloudSolrClient" class="org.apache.solr.client.solrj.impl.CloudSolrClient">
+        <constructor-arg name="zkHost" value="${solrcloud_zkhost}"></constructor-arg>
+        <property name="defaultCollection" value="${solrcloud_collectionname}"></property>
+    </bean>
+</beans>
