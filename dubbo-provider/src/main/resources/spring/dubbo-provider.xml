@@ -5,75 +5,17 @@
        http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
 
     <dubbo:protocol id="dubbo" name="dubbo"
-                    port="${OPEN.EMAIL.PROXY.DUBBO.PROVIDER.PORT}"/>
+                    port="${dubbo.provider.port}"/>
+
 
     <dubbo:service
-            interface="com.facishare.open.emailproxy.task.api.service.EmailService"
-            ref="emailService" protocol="dubbo" version="${EMAILSERVICE.DUBBO.VERSION}">
-        <dubbo:method name="bindEmail" timeout="120000"/>
-        <dubbo:method name="emailManualBind" timeout="120000"/>
-        <dubbo:method name="emailUpdate" timeout="30000"/>
-        <dubbo:method name="emailUnBind" timeout="20000"/>
+            interface="com.sunshine.dubbo.api.DemoService"
+            ref="demoServiceImpl" protocol="dubbo" version="1.0">
+        <dubbo:method name="hello" timeout="300000"/>
+        <dubbo:method name="hello1" timeout="600000"/>
     </dubbo:service>
 
     <dubbo:service
-            interface="com.facishare.open.emailproxy.task.api.service.RemoteEmailService"
-            ref="remoteEmailService" protocol="dubbo" version="${EMAILSERVICE.DUBBO.VERSION}">
-        <dubbo:method name="syncEmail" timeout="3600000"/>
-        <dubbo:method name="updateLocalImapMessage" timeout="300000"/>
-        <dubbo:method name="getImapStringByUid" timeout="300000"/>
-        <dubbo:method name="getPop3MessageInfoBySeqNum" timeout="300000"/>
-        <dubbo:method name="dealCheckPasswordError" timeout="120000"/>
-    </dubbo:service>
-
-    <dubbo:service
-            interface="com.facishare.open.emailproxy.task.api.service.RemoteMessageService"
-            ref="remoteMessageService" protocol="dubbo" version="${EMAILSERVICE.DUBBO.VERSION}">
-        <dubbo:method name="send" timeout="300000"/>
-        <dubbo:method name="delMessage" timeout="300000"/>
-    </dubbo:service>
-
-    <dubbo:service
-            interface="com.facishare.open.emailproxy.task.api.service.FolderService"
-            ref="folderService" protocol="dubbo" version="${EMAILSERVICE.DUBBO.VERSION}"/>
-
-    <dubbo:service
-            interface="com.facishare.open.emailproxy.task.api.service.SearchService"
-            ref="searchService" protocol="dubbo" version="${EMAILSERVICE.DUBBO.VERSION}"/>
-
-    <dubbo:service
-            interface="com.facishare.open.emailproxy.task.api.service.MessageService"
-            ref="messageService" protocol="dubbo" version="${EMAILSERVICE.DUBBO.VERSION}">
-        <dubbo:method name="downloadAttachment" timeout="300000"/>
-        <dubbo:method name="messageShare" timeout="600000"/>
-        <dubbo:method name="messageSend" timeout="600000"/>
-        <dubbo:method name="updateMessageCrmFlag" timeout="600000"/>
-        <dubbo:method name="searchMessage" timeout="150000"/>
-
-    </dubbo:service>
-
-    <dubbo:service
-            interface="com.facishare.open.emailproxy.task.api.service.EmailToolService"
-            ref="emailToolService" protocol="dubbo" version="${EMAILSERVICE.DUBBO.VERSION}"/>
-
-    <dubbo:service
-            interface="com.facishare.open.emailproxy.task.api.service.OperationService"
-            ref="operationService" protocol="dubbo" version="${EMAILSERVICE.DUBBO.VERSION}">
-        <dubbo:method name="doOperation" timeout="300000"/>
-        <dubbo:method name="batchDoOperation" timeout="600000"/>
-    </dubbo:service>
-
-    <dubbo:service
-            interface="com.facishare.open.emailproxy.task.api.service.EmailNoticeService"
-            ref="emailNoticeService" protocol="dubbo" version="${EMAILSERVICE.DUBBO.VERSION}"/>
-      <dubbo:service
-            interface="com.facishare.open.emailproxy.task.api.service.MotionService"
-            ref="motionService" protocol="dubbo" version="${EMAILSERVICE.DUBBO.VERSION}"/>
-    <dubbo:service
-            interface="com.facishare.open.emailproxy.task.api.service.CrmMessageService"
-            ref="crmMessageService" protocol="dubbo" version="${EMAILSERVICE.DUBBO.VERSION}"
-            timeout="10000"/>
-    <dubbo:service
-            interface="com.facishare.open.emailproxy.task.api.service.BpmEmailService"
-            ref="bpmEmailService" timeout="10000" protocol="dubbo" version="${EMAILSERVICE.DUBBO.VERSION}"/>
+            interface="com.sunshine.dubbo.api.UserService"
+            ref="userServiceImpl" timeout="10000" protocol="dubbo" version="1.0"/>
 </beans>
