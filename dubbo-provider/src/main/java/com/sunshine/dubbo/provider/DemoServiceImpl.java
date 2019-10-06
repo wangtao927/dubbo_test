@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service;
 public class DemoServiceImpl implements DemoService {
 
     public String hello() {
-        return null;
+        return "hello";
     }
 
     public String hello1(String param) {
-        return null;
+        return "hello1";
     }
 }

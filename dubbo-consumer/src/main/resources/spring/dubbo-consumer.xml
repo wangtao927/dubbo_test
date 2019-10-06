@@ -7,11 +7,13 @@
        http://code.alibabatech.com/schema/dubbo
        http://code.alibabatech.com/schema/dubbo/dubbo.xsd
        ">
+
     <dubbo:application name="${dubbo.application.name}"/>
 
     <!-- 使用multicast广播注册中心暴露发现服务地址 -->
     <dubbo:registry address="${dubbo.registry.address}" file="${dubbo.registry.file}"/>
     <!-- dubbo consumer -->
-    <dubbo:consumer check="false" timeout="6000" filter="tracerpc"/>
+    <dubbo:consumer check="false" timeout="6000"/>
 
+    <dubbo:reference id="userService" interface="com.sunshine.dubbo.api.UserService" version="1.0"/>
 </beans>

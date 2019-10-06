@@ -1,11 +1,16 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+       http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <context:property-placeholder location="classpath*:application.properties"/>
 
-    <dubbo:protocol id="dubbo" name="dubbo"
+    <dubbo:application id="dubbo-provider"  name="dubbo-provider"/>
+
+    <dubbo:protocol name="dubbo"
                     port="${dubbo.provider.port}"/>
+    <dubbo:registry address="${dubbo.registry.address}" file="${dubbo.registry.file}"/>
 
 
     <dubbo:service
@@ -14,7 +19,6 @@
         <dubbo:method name="hello" timeout="300000"/>
         <dubbo:method name="hello1" timeout="600000"/>
     </dubbo:service>
-
     <dubbo:service
             interface="com.sunshine.dubbo.api.UserService"
             ref="userServiceImpl" timeout="10000" protocol="dubbo" version="1.0"/>

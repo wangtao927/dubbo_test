@@ -1,244 +1,71 @@
-<configuration scan="false" scanPeriod="60 seconds" debug="false">
-    <!--<appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>TRACE</level>
-        </filter>
-        <file>${catalina.home}/logs/fs-app-info.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${catalina.home}/logs/fs-app-info-%d{yyyy-MM-dd}.log.gz</FileNamePattern>
-            <maxHistory>10</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%d{yyyy/MM/dd-HH:mm:ss.SSS} [%thread] %-5level %logger{12} %X{traceId} %X{userId} %msg%n</pattern>
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true" scan="true" scanPeriod="1 seconds">
+
+    <contextName>logback</contextName>
+    <!--定义参数,后面可以通过${app.name}使用-->
+    <property name="app.name" value="logback_test"/>
+    <!--ConsoleAppender 用于在屏幕上输出日志-->
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <!--定义了一个过滤器,在LEVEL之下的日志输出不会被打印出来-->
+        <!--这里定义了DEBUG，也就是控制台不会输出比ERROR级别小的日志-->
+        <!--<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>-->
+        <!-- encoder 默认配置为PatternLayoutEncoder -->
+        <!--定义控制台输出格式-->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d [%thread] %-5level %logger{36} [%file : %line] - %msg%n</pattern>
         </encoder>
-    </appender>-->
-    <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${catalina.home}/logs/fs-app-info.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${catalina.home}/logs/fs-app-info.%i.log.gz</fileNamePattern>
-            <minIndex>1</minIndex>
-            <maxIndex>10</maxIndex>
+
+    </appender>
+
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--定义日志输出的路径-->
+        <!--这里的scheduler.manager.server.home 没有在上面的配置中设定，所以会使用java启动时配置的值-->
+        <!--比如通过 java -Dscheduler.manager.server.home=/path/to XXXX 配置该属性-->
+        <file>${scheduler.manager.server.home}/logs/${app.name}.log</file>
+        <!--定义日志滚动的策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--定义文件滚动时的文件名的格式-->
+            <fileNamePattern>${scheduler.manager.server.home}/logs/${app.name}.%d{yyyy-MM-dd.HH}.log.gz
+            </fileNamePattern>
+            <!--60天的时间周期，日志量最大20GB-->
+            <maxHistory>60</maxHistory>
+            <!-- 该属性在 1.1.6版本后 才开始支持-->
+            <totalSizeCap>10MB</totalSizeCap>
         </rollingPolicy>
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>1GB</maxFileSize>
+            <!--每个日志文件最大100MB-->
+            <maxFileSize>10MB</maxFileSize>
         </triggeringPolicy>
+        <!--定义输出格式-->
         <encoder>
-            <pattern>%d{yyyy/MM/dd-HH:mm:ss.SSS} [%thread] %-5level %logger{12} %X{traceId} %X{userId} %msg%n</pattern>
+            <pattern>%d [%thread] %-5level %logger{36} [%file : %line] - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <!--<appender name="WARN_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>WARN</level>
-        </filter>
-        <file>${catalina.home}/logs/fs-app-warn.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${catalina.home}/logs/fs-app-warn-%d{yyyy-MM-dd}.log.gz</FileNamePattern>
-            <maxHistory>10</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%d{yyyy/MM/dd-HH:mm:ss.SSS} [%thread] %-5level %logger{12} %X{traceId} %X{userId} %msg%n</pattern>
-        </encoder>
-    </appender>-->
-    <appender name="WARN_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>WARN</level>
-        </filter>
-        <file>${catalina.home}/logs/fs-app-warn.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <FileNamePattern>${catalina.home}/logs/fs-app-warn-%i.log.gz</FileNamePattern>
-            <minIndex>1</minIndex>
-            <maxIndex>10</maxIndex>
-        </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>1GB</maxFileSize>
-        </triggeringPolicy>
-        <encoder>
-            <pattern>%d{yyyy/MM/dd-HH:mm:ss.SSS} [%thread] %-5level %logger{12} %X{traceId} %X{userId} %msg%n</pattern>
-        </encoder>
-    </appender>
-    <!--<appender name="EMAIL_SYNC_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
-        </filter>
-        <file>${catalina.home}/logs/fs-app-email-sync.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${catalina.home}/logs/fs-app-email-sync-%d{yyyy-MM-dd}.log.gz</FileNamePattern>
-            <maxHistory>20</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%d{yyyy/MM/dd-HH:mm:ss.SSS} [%thread]%msg%n</pattern>
-        </encoder>
-    </appender>-->
-    <appender name="EMAIL_SYNC_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
-        </filter>
-        <file>${catalina.home}/logs/fs-app-email-sync.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <FileNamePattern>${catalina.home}/logs/fs-app-email-sync-%i.log.gz</FileNamePattern>
-            <minIndex>1</minIndex>
-            <maxIndex>10</maxIndex>
-        </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>1GB</maxFileSize>
-        </triggeringPolicy>
-        <encoder>
-            <pattern>%d{yyyy/MM/dd-HH:mm:ss.SSS} [%thread]%msg%n</pattern>
-        </encoder>
-    </appender>
-
-    <!--<appender name="EMAIL_INSERT_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
-        </filter>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${catalina.home}/logs/fs-app-email-insert-%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>10</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread]%msg%n</pattern>
-        </encoder>
-    </appender>-->
-    <appender name="EMAIL_INSERT_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
-        </filter>
-        <file>${catalina.home}/logs/fs-app-email-insert.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${catalina.home}/logs/fs-app-email-insert-%i.log</fileNamePattern>
-            <minIndex>1</minIndex>
-            <maxIndex>10</maxIndex>
-        </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>1GB</maxFileSize>
-        </triggeringPolicy>
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread]%msg%n</pattern>
-        </encoder>
-    </appender>
-
-    <!--<appender name="EMAIL_RFC822" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
-        </filter>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${catalina.home}/logs/fs-app-email-rfc822-%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>7</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread]%msg%n</pattern>
-        </encoder>
-    </appender>-->
-    <appender name="EMAIL_RFC822" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
-        </filter>
-        <file>${catalina.home}/logs/fs-app-email-rfc822.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${catalina.home}/logs/fs-app-email-rfc822-%i.log</fileNamePattern>
-            <minIndex>1</minIndex>
-            <maxIndex>10</maxIndex>
-        </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>1GB</maxFileSize>
-        </triggeringPolicy>
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread]%msg%n</pattern>
-        </encoder>
-    </appender>
-
-    <!--<appender name="EMAIL_SESSION_DEBUG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
-        </filter>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${catalina.home}/logs/fs-app-email-session-debug-%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>10</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread]%msg%n</pattern>
-        </encoder>
-    </appender>-->
-    <appender name="EMAIL_SESSION_DEBUG" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
-        </filter>
-        <file>${catalina.home}/logs/fs-app-email-session-debug.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${catalina.home}/logs/fs-app-email-session-debug-%i.log</fileNamePattern>
-            <minIndex>1</minIndex>
-            <maxIndex>10</maxIndex>
-        </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>1GB</maxFileSize>
-        </triggeringPolicy>
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread]%msg%n</pattern>
-        </encoder>
-    </appender>
-
-    <!--<appender name="EMAIL_ERRORPARSE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
-        </filter>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${catalina.home}/logs/fs-app-email-errorparse-%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>7</maxHistory>
-        </rollingPolicy>
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread]%msg%n</pattern>
-        </encoder>
-    </appender>-->
-    <appender name="EMAIL_ERRORPARSE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>INFO</level>
-        </filter>
-        <file>${catalina.home}/logs/fs-app-email-errorparse.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <fileNamePattern>${catalina.home}/logs/fs-app-email-errorparse-%i.log</fileNamePattern>
-            <minIndex>1</minIndex>
-            <maxIndex>10</maxIndex>
-        </rollingPolicy>
-        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <maxFileSize>1GB</maxFileSize>
-        </triggeringPolicy>
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread]%msg%n</pattern>
-        </encoder>
-    </appender>
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>[%d{yyyy/MM/dd-HH:mm:ss.SSS}]-[%level]-[%thread]-[%class:%line]- %msg%n</pattern>
-        </encoder>
-    </appender>
-
-    <logger name="email.session.debug" level="INFO" additivity="false">
-        <appender-ref ref="EMAIL_SESSION_DEBUG"/>
-    </logger>
-    <logger name="fs.email.sync" level="INFO" additivity="false">
-        <appender-ref ref="EMAIL_SYNC_FILE"/>
-    </logger>
-
-    <logger name="fs.email.insert" level="INFO" additivity="false">
-        <appender-ref ref="EMAIL_INSERT_FILE"/>
-    </logger>
-
-    <logger name="fs.email.frc822" level="INFO" additivity="false">
-        <appender-ref ref="EMAIL_RFC822"/>
-    </logger>
-
-    <logger name="fs.email.errorparse" level="INFO" additivity="false">
-        <appender-ref ref="EMAIL_ERRORPARSE"/>
-    </logger>
-    <logger name="com.github.trace" level="ERROR" additivity="false">
-        <appender-ref ref="INFO_FILE"/>
-    </logger>
-    <logger name="com.fxiaoke.cloud" level="ERROR" additivity="false">
-        <appender-ref ref="INFO_FILE"/>
-    </logger>
-    <root level="info">
-        <appender-ref ref="INFO_FILE"/>
-        <appender-ref ref="WARN_FILE"/>
+    <!--root是默认的logger 这里设定输出级别是debug-->
+    <root level="INFO">
+        <!--定义了两个appender，日志会通过往这两个appender里面写-->
+        <appender-ref ref="stdout"/>
+        <appender-ref ref="file"/>
     </root>
+
+    <!--对于类路径以 com.example.logback 开头的Logger,输出级别设置为warn,并且只输出到控制台-->
+    <!--这个logger没有指定appender，它会继承root节点中定义的那些appender-->
+    <logger name="com.example.logback" level="warn"/>
+
+    <!--通过 LoggerFactory.getLogger("mytest") 可以获取到这个logger-->
+    <!--由于这个logger自动继承了root的appender，root中已经有stdout的appender了，自己这边又引入了stdout的appender-->
+    <!--如果没有设置 additivity="false" ,就会导致一条日志在控制台输出两次的情况-->
+    <!--additivity表示要不要使用rootLogger配置的appender进行输出-->
+    <!--<logger name="mytest" level="info" additivity="false">
+        <appender-ref ref="stdout"/>
+    </logger>-->
+
+    <!--由于设置了 additivity="false" ，所以输出时不会使用rootLogger的appender-->
+    <!--但是这个logger本身又没有配置appender，所以使用这个logger输出日志的话就不会输出到任何地方-->
+<!--
+    <logger name="mytest2" level="info" additivity="false"/>
+-->
 </configuration>

@@ -10,11 +10,12 @@
 
     <context:annotation-config/>
     <aop:aspectj-autoproxy/>
-    <context:component-scan base-package="com.sunshine"/>
+    <context:component-scan base-package="com.sunshine.dubbo.cosumer"/>
 
-    <context:property-placeholder location="application.properties"/>
+    <context:property-placeholder location="classpath*:application.properties"/>
+
     <import resource="dubbo-consumer.xml"/>
-    <import resource="dubbo-provider.xml"/>
+   <!-- <import resource="dubbo-provider.xml"/>-->
 
 
 

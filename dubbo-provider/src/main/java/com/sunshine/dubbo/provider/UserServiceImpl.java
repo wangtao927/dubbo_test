@@ -10,14 +10,18 @@ public class UserServiceImpl implements UserService {
 
 
     public boolean addUser(User user) {
-        return false;
+        return true;
     }
 
     public boolean updatetUser(User user) {
-        return false;
+        return true;
     }
 
     public User getUser(long id) {
-        return null;
+        User u = new User();
+        u.setId(1L);
+        u.setAge(10);
+        u.setName("wangt");
+        return u;
     }
 }
