@@ -15,7 +15,7 @@
 	<properties>
 		<!-- 第三方 -->
 		<java.version>1.8</java.version>
-		<spring-framework.version>4.1.7.RELEASE</spring-framework.version>
+		<spring-framework.version>5.3.19</spring-framework.version>
 		<logback.version>1.1.7</logback.version>
 		<dubbo.version>2.5.3</dubbo.version>
 		<slf4j.version>1.7.21</slf4j.version>
